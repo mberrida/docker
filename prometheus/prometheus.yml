@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s   # Intervalle de récupération des métriques
+
+scrape_configs:
+  # Configuration pour surveiller Prometheus lui-même
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]  # Prometheus lui-même
+
+  # Configuration pour surveiller Traefik
+  - job_name: "traefik"
+    static_configs:
+      - targets: ["traefik:8080"]   # Traefik expose les métriques à /metrics
+
+  # Configuration pour surveiller Nginx
+  - job_name: "nginx"
+    static_configs:
+      - targets: ["nginx:80"]  # Nginx sur le port 80 (Assurez-vous que le module stub_status est activé dans Nginx)
+
+  # Configuration pour surveiller Grafana
+  - job_name: "grafana"
+    metrics_path: /metrics  # Grafana expose les métriques à /metrics
+    static_configs:
+      - targets: ["grafana:8081"]
