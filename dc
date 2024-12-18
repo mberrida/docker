@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   traefik:
     image: traefik:v2.10
@@ -23,7 +21,8 @@ services:
     labels:
       - "traefik.enable=true"
     networks:
-      - common-network
+      traefik-network:
+        ipv4_address: 192.168.1.2
     restart: always
 
   nginx:
@@ -41,7 +40,8 @@ services:
     depends_on:
       - traefik
     networks:
-      - common-network
+      nginx-network:
+        ipv4_address: 192.168.2.2
     restart: always
 
   prometheus:
@@ -56,7 +56,10 @@ services:
       - "traefik.http.routers.prometheus.rule=Host(`prometheus.localhost`)"
       - "traefik.http.routers.prometheus.entrypoints=web"
     networks:
-      - common-network
+      prometheus-network:
+        ipv4_address: 192.168.3.2
+      traefik-network:
+        ipv4_address: 192.168.1.3
     restart: always
 
   grafana:
@@ -72,11 +75,29 @@ services:
       - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
       - "traefik.http.routers.grafana.entrypoints=web"
     networks:
-      - common-network
+      prometheus-network:
+        ipv4_address: 192.168.3.3
+      traefik-network:
+        ipv4_address: 192.168.1.4
     depends_on:
       - prometheus
     restart: always
 
 networks:
-  common-network:
+  traefik-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+
+  nginx-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+
+  prometheus-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.3.0/24

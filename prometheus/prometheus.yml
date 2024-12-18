@@ -10,7 +10,7 @@ scrape_configs:
   # Configuration pour surveiller Traefik
   - job_name: "traefik"
     static_configs:
-      - targets: ["traefik:8080"]   # Traefik expose les métriques à /metrics
+      - targets: ["traefik:8890"]   # Traefik expose les métriques à /metrics
 
   # Configuration pour surveiller Nginx
   - job_name: "nginx"
